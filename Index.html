@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tesla Vision Investment Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0f17, #1a1a2e);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        header {
+            background: linear-gradient(to bottom, #000000, #001f3f);
+            padding: 80px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.2em;
+            color: #ff1a1a;
+            text-shadow: 0 0 20px rgba(255, 26, 26, 0.6);
+            letter-spacing: 4px;
+        }
+        header p {
+            font-size: 1.3em;
+            margin-top: 10px;
+            color: #aaa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .balance-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        .balance-card h2 {
+            font-size: 1.4em;
+            color: #00ff9d;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        .balance-amount {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4em;
+            font-weight: 700;
+            color: #00ff9d;
+            text-shadow: 0 0 30px rgba(0, 255, 157, 0.7);
+        }
+        .status {
+            text-align: center;
+            margin: 40px 0;
+            font-size: 1.2em;
+        }
+        .status span {
+            color: #00ff9d;
+            font-weight: 500;
+        }
+        #clock {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8em;
+            margin-top: 15px;
+            color: #ff4444;
+            text-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+            color: #ff1a1a;
+            text-shadow: 0 0 10px rgba(255, 26, 26, 0.3);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.95em;
+        }
+        th {
+            background: rgba(255, 26, 26, 0.2);
+            color: #ff9999;
+            padding: 15px;
+            text-align: left;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        canvas {
+            max-width: 500px;
+            margin: 30px auto;
+            display: block;
+        }
+        .share-btn {
+            display: block;
+            width: 280px;
+            margin: 40px auto;
+            padding: 16px;
+            background: linear-gradient(to right, #ff1a1a, #ff4444);
+            color: white;
+            font-size: 1.2em;
+            font-weight: 500;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 26, 26, 0.4);
+            transition: all 0.3s;
+        }
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 26, 26, 0.6);
+        }
+        #share-message {
+            text-align: center;
+            color: #00ff9d;
+            font-size: 1.1em;
+            margin-top: 15px;
+        }
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.5em; }
+            .balance-amount { font-size: 3em; }
+            table { font-size: 0.85em; }
+            canvas { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>TESLA VISION</h1>
+        <p>Next-Generation Investment Dashboard</p>
+    </header>
+
+    <div class="container">
+        <div class="balance-card">
+            <h2>Available Investment Balance</h2>
+            <div class="balance-amount">$5,000,000.00</div>
+        </div>
+
+        <div class="status">
+            <p>System Status: <span>ACTIVE & RUNNING</span></p>
+            <div id="clock"></div>
+        </div>
+
+        <div class="section">
+            <h2>Transaction History (~$2M Total Activity)</h2>
+            <table id="transaction-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Amount ($)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Investment Allocation Breakdown</h2>
+            <canvas id="pieChart"></canvas>
+        </div>
+
+        <button class="share-btn" onclick="shareLink()">Share This Dashboard</button>
+        <p id="share-message" style="display:none;">Link copied to clipboard!</p>
+    </div>
+
+    <script>
+        const transactions = [
+            {date:"2025-01-30", desc:"Payment for salaries - Invoice #5969", cat:"Salaries", amt:138603.52},
+            {date:"2025-09-08", desc:"Payment for supplies - Invoice #6009", cat:"Supplies", amt:125465.48},
+            {date:"2025-05-19", desc:"Payment for R&D - Invoice #9906", cat:"R&D", amt:137146.53},
+            {date:"2025-04-14", desc:"Payment for supplies - Invoice #5006", cat:"Supplies", amt:170432.21},
+            {date:"2025-02-01", desc:"Payment for R&D - Invoice #5620", cat:"R&D", amt:142521.57},
+            {date:"2025-12-17", desc:"Payment for marketing - Invoice #1030", cat:"Marketing", amt:198429.62},
+            {date:"2025-11-12", desc:"Payment for R&D - Invoice #1310", cat:"R&D", amt:57129.86},
+            {date:"2025-05-26", desc:"Payment for supplies - Invoice #2936", cat:"Supplies", amt:57032.41},
+            {date:"2025-01-18", desc:"Payment for salaries - Invoice #8188", cat:"Salaries", amt:91313.01},
+            {date:"2025-04-22", desc:"Payment for operational costs - Invoice #5305", cat:"Other", amt:168712.98},
+            {date:"2025-10-04", desc:"Payment for marketing - Invoice #7796", cat:"Marketing", amt:111013.79},
+            {date:"2025-05-04", desc:"Payment for supplies - Invoice #9194", cat:"Supplies", amt:153348.15},
+            {date:"2025-12-01", desc:"Payment for salaries - Invoice #4610", cat:"Salaries", amt:65228.60},
+            {date:"2025-11-27", desc:"Payment for infrastructure - Invoice #2235", cat:"Other", amt:199301.32},
+            {date:"2025-07-18", desc:"Payment for salaries - Invoice #6813", cat:"Salaries", amt:134669.87},
+            {date:"2025-07-02", desc:"Payment for R&D - Invoice #1970", cat:"R&D", amt:153333.11},
+            {date:"2025-10-12", desc:"Payment for R&D - Invoice #8437", cat:"R&D", amt:23688.73},
+            {date:"2025-07-08", desc:"Payment for salaries - Invoice #1227", cat:"Salaries", amt:36600.97},
+            {date:"2025-06-15", desc:"Payment for team expansion - Invoice #2076", cat:"Salaries", amt:20068.31}
+        ];
+
+        const tbody = document.querySelector('#transaction-table tbody');
+        transactions.forEach(tx => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${tx.date}</td><td>${tx.desc}</td><td>${tx.cat}</td><td>$${tx.amt.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>`;
+            tbody.appendChild(row);
+        });
+
+        const ctx = document.getElementById('pieChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Salaries', 'Supplies', 'R&D', 'Marketing', 'Other'],
+                datasets: [{
+                    data: [486484, 506278, 513820, 309444, 368014],
+                    backgroundColor: ['#00ff9d', '#ff4444', '#4488ff', '#ffaa00', '#aa00ff'],
+                    borderColor: '#0f0f17',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#e0e0e0', padding: 20 } },
+                    title: { display: false }
+                }
+            }
+        });
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function shareLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const msg = document.getElementById('share-message');
+                msg.style.display = 'block';
+                setTimeout(() => msg.style.display = 'none', 3000);
+            });
+        }
+    </script>
+</body>
+</html>
